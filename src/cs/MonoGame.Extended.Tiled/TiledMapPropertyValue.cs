@@ -4,6 +4,7 @@ public class TiledMapPropertyValue
 {
     public string Value { get; }
 
+<<<<<<< HEAD
     public string Type { get; }
 
     public string PropertyType { get; }
@@ -18,6 +19,28 @@ public class TiledMapPropertyValue
         Properties = new();
     }
 
+=======
+    public TiledMapProperties Properties;
+
+    public TiledMapPropertyValue()
+    {
+        Value = string.Empty;
+        Properties = new();
+    }
+
+    public TiledMapPropertyValue(string value)
+    {
+        Value = value;
+        Properties = new();
+    }
+
+    public TiledMapPropertyValue(TiledMapProperties properties)
+    {
+        Value = string.Empty;
+        Properties = properties;
+    }
+
+>>>>>>> bde79b89970010e29e2204042ac717246b20073b
     public override string ToString() => Value;
 
     //public static implicit operator TiledMapPropertyValue(string value) => new(value);
