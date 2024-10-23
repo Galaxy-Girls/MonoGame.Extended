@@ -132,7 +132,7 @@ namespace MonoGame.Extended.Collisions
                         foreach (ICollisionActor other in secondLayer.Space.Query(actor.Bounds.BoundingRectangle))
                             if (actor != other && actor.Bounds.Intersects(other.Bounds))
                             {
-                                CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds) };
+                                CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, offset) };
                                 hitBuffer.Add(collisionInfo);
                             }
                     }
@@ -203,7 +203,7 @@ namespace MonoGame.Extended.Collisions
                     foreach (ICollisionActor other in layer.Space.Query(actor.Bounds.BoundingRectangle))
                         if (actor != other && actor.Bounds.Intersects(other.Bounds))
                         {
-                            CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds) };
+                            CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, offset) };
                             hitBuffer.Add(collisionInfo);
                         }
                 }
@@ -287,13 +287,14 @@ namespace MonoGame.Extended.Collisions
         /// </summary>
         /// <param name="shapeA">The penetrating shape.</param>
         /// <param name="shapeB">The shape being penetrated.</param>
+        /// <param name="direction">The direction of movement.</param>
         /// <returns>The distance vector from the edge of b to a's Position</returns>
-        private static Vector2 CalculatePenetrationVector(IShapeF shapeA, IShapeF shapeB)
+        private static Vector2 CalculatePenetrationVector(IShapeF shapeA, IShapeF shapeB, Vector2? direction = null)
         {
             switch (shapeA)
             {
                 case RectangleF a when shapeB is RectangleF b:
-                    return PenetrationVector(a, b);
+                    return PenetrationVector(a, b, direction);
                 case RectangleF a when shapeB is CircleF b:
                     return PenetrationVector(a, b);
                 case RectangleF a when shapeB is TriangleF b:
@@ -319,27 +320,28 @@ namespace MonoGame.Extended.Collisions
             throw new NotSupportedException("Shapes must be either a CircleF, RectangleF, or TriangleF.");
         }
 
-        private static Vector2 PenetrationVector(RectangleF rect1, RectangleF rect2)
+        private static Vector2 PenetrationVector(RectangleF rect1, RectangleF rect2, Vector2? direction)
         {
             var intersectingRectangle = RectangleF.Intersection(rect1, rect2);
             Debug.Assert(!intersectingRectangle.IsEmpty,
                 "Violation of: !intersect.IsEmpty; Rectangles must intersect to calculate a penetration vector.");
 
             Vector2 penetration;
-            if (intersectingRectangle.Width < intersectingRectangle.Height)
+            if (direction.HasValue ? (direction.Value.X != 0) : (intersectingRectangle.Width < intersectingRectangle.Height))
             {
                 var d = rect1.Center.X < rect2.Center.X
                     ? intersectingRectangle.Width
                     : -intersectingRectangle.Width;
                 penetration = new Vector2(d, 0);
             }
-            else
+            else// if (direction.Value.Y != 0)
             {
                 var d = rect1.Center.Y < rect2.Center.Y
                     ? intersectingRectangle.Height
                     : -intersectingRectangle.Height;
                 penetration = new Vector2(0, d);
             }
+            //else penetration = Vector2.Zero;
 
             return penetration;
         }
