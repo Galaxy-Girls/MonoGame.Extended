@@ -40,7 +40,7 @@ namespace MonoGame.Extended.Tests
         public void Vector2_Rotate_90_Degrees_Test()
         {
             var a = new Vector2(0, -10);
-            var b = a.Rotate(MathHelper.ToRadians(90));
+            var b = Vector2Extensions.Rotate(a, MathHelper.ToRadians(90));
 
             Assert.True(new Vector2(10, 0).EqualsWithTolerence(b));
         }
@@ -49,7 +49,7 @@ namespace MonoGame.Extended.Tests
         public void Vector2_Rotate_360_Degrees_Test()
         {
             var a = new Vector2(0, 10);
-            var b = a.Rotate(MathHelper.ToRadians(360));
+            var b = Vector2Extensions.Rotate(a, MathHelper.ToRadians(360));
 
             Assert.True(new Vector2(0, 10).EqualsWithTolerence(b));
         }
@@ -58,7 +58,7 @@ namespace MonoGame.Extended.Tests
         public void Vector2_Rotate_45_Degrees_Test()
         {
             var a = new Vector2(0, -10);
-            var b = a.Rotate(MathHelper.ToRadians(45));
+            var b = Vector2Extensions.Rotate(a, MathHelper.ToRadians(45));
 
             Assert.True(new Vector2(7.071068f, -7.071068f).EqualsWithTolerence(b));
         }
@@ -91,7 +91,7 @@ namespace MonoGame.Extended.Tests
         {
             var a = new Vector2(0, -10);
             var b = new Vector2(10, 0);
-            var c = -Vector2.UnitY.Rotate(MathHelper.ToRadians(45));
+            var c = -Vector2Extensions.Rotate(Vector2.UnitY, MathHelper.ToRadians(45));
 
             Assert.Equal(MathHelper.ToRadians(0), a.ToAngle());
             Assert.Equal(MathHelper.ToRadians(90), b.ToAngle());

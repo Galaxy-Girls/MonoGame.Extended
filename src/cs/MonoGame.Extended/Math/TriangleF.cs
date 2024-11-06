@@ -67,9 +67,9 @@ namespace MonoGame.Extended
 
             return new TriangleF
             {
-                A = offsetA.Rotate(angle) + center,
-                B = offsetB.Rotate(angle) + center,
-                C = offsetC.Rotate(angle) + center,
+                A = Vector2Extensions.Rotate(offsetA, angle) + center,
+                B = Vector2Extensions.Rotate(offsetB, angle) + center,
+                C = Vector2Extensions.Rotate(offsetC, angle) + center,
             };
         }
 
