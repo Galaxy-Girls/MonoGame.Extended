@@ -25,7 +25,7 @@ namespace MonoGame.Extended
         /// <summary>
         ///     The centre position of this <see cref="CircleF" />.
         /// </summary>
-        [DataMember] public Point2 Center;
+        [DataMember] public Point2 Center { get; set; }
 
         /// <summary>
         ///     The distance from the <see cref="Center" /> point to any point on the boundary of this <see cref="CircleF" />.
@@ -82,6 +82,7 @@ namespace MonoGame.Extended
         /// <param name="result">The resulting circle.</param>
         public static void CreateFrom(Point2 minimum, Point2 maximum, out CircleF result)
         {
+            result = new();
             result.Center = new Point2((maximum.X + minimum.X) * 0.5f, (maximum.Y + minimum.Y) * 0.5f);
             var distanceVector = maximum - minimum;
             result.Radius = distanceVector.X > distanceVector.Y ? distanceVector.X * 0.5f : distanceVector.Y * 0.5f;

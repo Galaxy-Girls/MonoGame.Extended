@@ -14,6 +14,11 @@
         Point2 Position { get; set; }
 
         /// <summary>
+        /// Gets or sets the position of the shape center.
+        /// </summary>
+        Point2 Center { get; set; }
+
+        /// <summary>
         /// Gets a rectangle inscribed around the outside the shape.
         /// </summary>
         /// <remarks>

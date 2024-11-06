@@ -115,7 +115,11 @@ namespace MonoGame.Extended
         /// <summary>
         ///     Gets the <see cref="Point2" /> representing the center of this <see cref="RectangleF" />.
         /// </summary>
-        public Point2 Center => new Point2(X + Width * 0.5f, Y + Height * 0.5f);
+        public Point2 Center
+        {
+            get => new Point2(X + Width * 0.5f, Y + Height * 0.5f);
+            set => (X, Y) = (value.X - Width * 0.5f, value.Y - Height * 0.5f);
+        }
 
         /// <summary>
         ///     Gets the <see cref="Point2" /> representing the top-left of this <see cref="RectangleF" />.

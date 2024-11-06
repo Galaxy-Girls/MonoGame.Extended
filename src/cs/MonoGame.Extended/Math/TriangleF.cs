@@ -124,7 +124,18 @@ namespace MonoGame.Extended
         /// <summary>
         ///     Gets the <see cref="Point2" /> representing the center of this <see cref="TriangleF" />.
         /// </summary>
-        public Point2 Center => new((A.X + B.X + C.X) / 3f, (A.Y + B.Y + C.Y) / 3f);
+        public Point2 Center
+        {
+            get => new((A.X + B.X + C.X) / 3f, (A.Y + B.Y + C.Y) / 3f);
+            set
+            {
+                Point2 center = Center;
+                Vector2 offset = value - center;
+                A += offset;
+                B += offset;
+                C += offset;
+            }
+        }
 
 
         /// <summary>

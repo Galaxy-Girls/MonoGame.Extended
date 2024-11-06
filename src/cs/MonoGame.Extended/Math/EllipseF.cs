@@ -8,7 +8,7 @@ namespace MonoGame.Extended
     [DataContract]
     public struct EllipseF : IEquatable<EllipseF>, IEquatableByRef<EllipseF>, IShapeF
     {
-        [DataMember] public Vector2 Center { get; set; }
+        [DataMember] public Point2 Center { get; set; }
         [DataMember] public float RadiusX { get; set; }
         [DataMember] public float RadiusY { get; set; }
 
