@@ -32,6 +32,13 @@
         /// <param name="point">The point to test.</param>
         /// <returns>True if the point is within the bounds of the shape.</returns>
         bool Contains(Point2 point);
+
+        /// <summary>
+        /// Returns a new shape with a new position.
+        /// </summary>
+        /// <param name="newPosition">The new position.</param>
+        /// <returns>A copy of the shape with a new position.</returns>
+        IShapeF WithPosition(Point2 newPosition);
     }
 
     /// <summary>

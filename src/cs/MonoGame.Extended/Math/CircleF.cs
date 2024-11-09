@@ -73,6 +73,9 @@ namespace MonoGame.Extended
             Radius = radius;
         }
 
+        /// <inheritdoc cref="IShapeF.WithPosition(Point2)"/>
+        public IShapeF WithPosition(Point2 newPosition) => this with { Position = newPosition };
+
         /// <summary>
         ///     Computes the bounding <see cref="CircleF" /> from a minimum <see cref="Point2" /> and maximum
         ///     <see cref="Point2" />.

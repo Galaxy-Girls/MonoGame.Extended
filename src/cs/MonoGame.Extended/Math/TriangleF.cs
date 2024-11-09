@@ -180,6 +180,9 @@ namespace MonoGame.Extended
             C = center + ((C - center) * scale);
         }
 
+        /// <inheritdoc cref="IShapeF.WithPosition(Point2)"/>
+        public IShapeF WithPosition(Point2 newPosition) => this with { Position = newPosition };
+
         /// <summary>
         ///     Determines whether the two specified <see cref="TriangleF" /> structures intersect.
         /// </summary>

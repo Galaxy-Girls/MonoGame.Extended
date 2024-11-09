@@ -24,7 +24,10 @@ namespace MonoGame.Extended
             RadiusX = radiusX;
             RadiusY = radiusY;
         }
-    
+
+        /// <inheritdoc cref="IShapeF.WithPosition(Point2)"/>
+        public IShapeF WithPosition(Point2 newPosition) => this with { Position = newPosition };
+
         public float Left => Center.X - RadiusX;
         public float Top => Center.Y - RadiusY;
         public float Right => Center.X + RadiusX;

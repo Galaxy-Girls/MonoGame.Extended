@@ -157,6 +157,9 @@ namespace MonoGame.Extended
             Height = height;
         }
 
+        /// <inheritdoc cref="IShapeF.WithPosition(Point2)"/>
+        public IShapeF WithPosition(Point2 newPosition) => this with { Position = newPosition };
+
         /// <summary>
         ///     Initializes a new instance of the <see cref="RectangleF" /> structure from the specified top-left
         ///     <see cref="Point2" /> and the extents <see cref="Size2" />.
