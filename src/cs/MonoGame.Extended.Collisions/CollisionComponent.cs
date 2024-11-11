@@ -291,6 +291,7 @@ namespace MonoGame.Extended.Collisions
         /// <returns>The distance vector from the edge of b to a's Position</returns>
         private static Vector2 CalculatePenetrationVector(IShapeF shapeA, IShapeF shapeB, Vector2? direction = null)
         {
+            if (direction == Vector2.Zero) direction = null;
             switch (shapeA)
             {
                 case RectangleF a when shapeB is RectangleF b:
