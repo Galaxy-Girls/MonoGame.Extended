@@ -168,10 +168,27 @@ namespace MonoGame.Extended.Collisions
         public int Cast(IEnumerable<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, Layer layer, Vector2 direction, float distance)
         {
             hitBuffer.Clear();
+
             Vector2 offset;
             if (direction == Vector2.Zero) offset = Vector2.Zero;
             else offset = direction.NormalizedCopy() * distance;
-            return Cast(actors, hitBuffer, layer, offset);
+            
+            foreach (ICollisionActor actor in actors)
+            {
+                try
+                {
+                    actor.Bounds.Position += offset;
+                    foreach (ICollisionActor other in layer.Space.Query(actor.Bounds.BoundingRectangle))
+                        if (actor != other && actor.Bounds.Intersects(other.Bounds))
+                        {
+                            CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, direction) };
+                            hitBuffer.Add(collisionInfo);
+                        }
+                }
+                finally { actor.Bounds.Position -= offset; }
+            }
+
+            return hitBuffer.Count;
         }
 
         /// <summary>
@@ -195,21 +212,9 @@ namespace MonoGame.Extended.Collisions
         /// <param name="offset">Vector representing the translation to use for each cast.</param>
         public int Cast(IEnumerable<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, Layer layer, Vector2 offset)
         {
-            foreach (ICollisionActor actor in actors)
-            {
-                try
-                {
-                    actor.Bounds.Position += offset;
-                    foreach (ICollisionActor other in layer.Space.Query(actor.Bounds.BoundingRectangle))
-                        if (actor != other && actor.Bounds.Intersects(other.Bounds))
-                        {
-                            CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, offset) };
-                            hitBuffer.Add(collisionInfo);
-                        }
-                }
-                finally { actor.Bounds.Position -= offset; }
-            }
-            return hitBuffer.Count;
+            Vector2 direction = offset.NormalizedCopy();
+            float distance = offset.Length();
+            return Cast(actors, hitBuffer, layer, direction, distance);
         }
 
         /// <summary>
@@ -291,7 +296,6 @@ namespace MonoGame.Extended.Collisions
         /// <returns>The distance vector from the edge of b to a's Position</returns>
         private static Vector2 CalculatePenetrationVector(IShapeF shapeA, IShapeF shapeB, Vector2? direction = null)
         {
-            if (direction == Vector2.Zero) direction = null;
             switch (shapeA)
             {
                 case RectangleF a when shapeB is RectangleF b:
