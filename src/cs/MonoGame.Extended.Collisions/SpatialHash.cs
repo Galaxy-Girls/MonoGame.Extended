@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -10,6 +9,8 @@ public class SpatialHash: ISpaceAlgorithm
     private readonly List<ICollisionActor> _actors = new();
 
     private readonly Size2 _size;
+
+    public RectangleF Bounds => new(Point2.Zero, _size);
 
     public SpatialHash(Size2 size)
     {

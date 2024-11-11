@@ -9,6 +9,8 @@ public class QuadTreeSpace: ISpaceAlgorithm
     private readonly List<ICollisionActor> _actors = new();
     private readonly Dictionary<ICollisionActor, QuadtreeData> _targetDataDictionary = new();
 
+    public RectangleF Bounds => _collisionTree.NodeBounds;
+
     public QuadTreeSpace(RectangleF boundary)
     {
         _collisionTree = new QuadTree(boundary);

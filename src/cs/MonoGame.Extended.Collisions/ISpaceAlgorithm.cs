@@ -42,4 +42,9 @@ public interface ISpaceAlgorithm
     /// Restructure the space with new positions.
     /// </summary>
     void Reset();
+
+    /// <summary>
+    /// Gets the bounding rectangle of the space.
+    /// </summary>
+    RectangleF Bounds { get; }
 }
