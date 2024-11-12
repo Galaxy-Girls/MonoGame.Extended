@@ -539,27 +539,22 @@ namespace MonoGame.Extended
         }
 
         //TODO: Document this.
-        public void Inflate(float horizontalAmount, float verticalAmount)
+        public RectangleF Inflate(float amount)
+            => Inflate(amount, amount);
+
+        //TODO: Document this.
+        public RectangleF Inflate(float horizontalAmount, float verticalAmount)
         {
-            X -= horizontalAmount;
-            Y -= verticalAmount;
-            Width += horizontalAmount * 2;
-            Height += verticalAmount * 2;
+            Size2 inflation = new(horizontalAmount, verticalAmount);
+            return new(Position - inflation, Size + (inflation * 2f));
         }
 
         //TODO: Document this.
-        public void Offset(float offsetX, float offsetY)
-        {
-            X += offsetX;
-            Y += offsetY;
-        }
+        public RectangleF Offset(float offsetX, float offsetY)
+            => Offset(new(offsetX, offsetY));
 
         //TODO: Document this.
-        public void Offset(Vector2 amount)
-        {
-            X += amount.X;
-            Y += amount.Y;
-        }
+        public RectangleF Offset(Vector2 amount) => new(Position + amount, Size);
 
         /// <summary>
         ///     Compares two <see cref="RectangleF" /> structures. The result specifies whether the values of the
