@@ -14,6 +14,8 @@ namespace MonoGame.Extended.Tiled.Renderers
         private TiledMapModel _mapModel;
         private Matrix _worldMatrix = Matrix.Identity;
 
+        public bool RenderImageLayers { get; set; }
+
         public TiledMapRenderer(GraphicsDevice graphicsDevice, TiledMap map = null)
         {
             if (graphicsDevice == null) throw new ArgumentNullException(nameof(graphicsDevice));
@@ -128,10 +130,10 @@ namespace MonoGame.Extended.Tiled.Renderers
 			if (!layer.IsVisible)
 				return;
 
-			if (layer is TiledMapObjectLayer)
-				return;
+            if (layer is TiledMapObjectLayer)
+                return;
 
-			Draw(layer, Vector2.Zero, Vector2.One, ref viewMatrix, ref projectionMatrix, effect, depth);
+            Draw(layer, Vector2.Zero, Vector2.One, ref viewMatrix, ref projectionMatrix, effect, depth);
 		}
 
 		private void Draw(TiledMapLayer layer, Vector2 parentOffset, Vector2 parentParallaxFactor, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect, float depth)
@@ -144,7 +146,9 @@ namespace MonoGame.Extended.Tiled.Renderers
 				foreach (var subLayer in groupLayer.Layers)
 					Draw(subLayer, offset, parallaxFactor, ref viewMatrix, ref projectionMatrix, effect, depth);
 			}
-			else
+            else if ((layer is TiledMapImageLayer) && (!RenderImageLayers))
+                return;
+            else
 			{
 				_worldMatrix.Translation = new Vector3(offset, depth);
 
