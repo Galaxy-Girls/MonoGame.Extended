@@ -137,7 +137,12 @@ namespace MonoGame.Extended.Collisions
                     foreach (ICollisionActor other in layer.Space.Query(actor.Bounds.BoundingRectangle))
                         if (actor != other && actor.Bounds.Intersects(other.Bounds))
                         {
-                            CollisionEventArgs collisionInfo = new() { Other = other, PenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, direction) };
+                            CollisionEventArgs collisionInfo = new()
+                            {
+                                Other = other,
+                                ParallelPenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, direction),
+                                ShortestPenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds)
+                            };
                             hitBuffer.Add(collisionInfo);
                         }
                 }

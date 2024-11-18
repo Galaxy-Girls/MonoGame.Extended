@@ -14,6 +14,15 @@ namespace MonoGame.Extended.Collisions
         /// </summary>
         public ICollisionActor Other { get; internal set; }
 
+        internal Vector2 PenetrationVector
+        {
+            set
+            {
+                ParallelPenetrationVector = value;
+                ShortestPenetrationVector = value;
+            }
+        }
+
         /// <summary>
         /// Gets a vector representing the overlap between the two objects.
         /// </summary>
@@ -21,6 +30,15 @@ namespace MonoGame.Extended.Collisions
         /// This vector starts at the edge of <see cref="Other"/> and ends at
         /// the Actor's location.
         /// </remarks>
-        public Vector2 PenetrationVector { get; internal set; }
+        public Vector2 ParallelPenetrationVector { get; internal set; }
+
+        /// <summary>
+        /// Gets a vector representing the overlap between the two objects.
+        /// </summary>
+        /// <remarks>
+        /// This vector starts at the edge of <see cref="Other"/> and ends at
+        /// the Actor's location.
+        /// </remarks>
+        public Vector2 ShortestPenetrationVector { get; internal set; }
     }
 }
