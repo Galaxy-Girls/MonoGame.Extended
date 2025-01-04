@@ -108,9 +108,12 @@ namespace MonoGame.Extended.Collisions
         /// <param name="layer">The name of the layer to cast on.</param>
         /// <param name="direction">Normalized vector representing the direction to cast each shape.</param>
         /// <param name="distance">Maximum distance over which to cast the Collider(s).</param>
-        public int Cast(IEnumerable<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, string layer, Vector2 direction, float distance)
+        public int Cast(ReadOnlySpan<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, string layer, Vector2 direction, float distance)
             => Cast(actors, hitBuffer, _layers[layer], direction, distance);
 
+        /// <inheritdoc cref="Cast(ReadOnlySpan{ICollisionActor}, List{CollisionEventArgs}, string, Vector2, float)"/>
+        public int Cast(IEnumerable<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, string layer, Vector2 direction, float distance)
+            => Cast(actors, hitBuffer, _layers[layer], direction, distance);
 
         /// <summary>
         /// Cast an actor's colliders in a direction and check for collisions.
@@ -121,6 +124,38 @@ namespace MonoGame.Extended.Collisions
         /// <param name="layer">The layer to cast on.</param>
         /// <param name="direction">Normalized vector representing the direction to cast each shape.</param>
         /// <param name="distance">Maximum distance over which to cast the Collider(s).</param>
+        public int Cast(ReadOnlySpan<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, Layer layer, Vector2 direction, float distance)
+        {
+            hitBuffer.Clear();
+
+            Vector2 offset;
+            if (direction == Vector2.Zero) offset = Vector2.Zero;
+            else offset = direction.NormalizedCopy() * distance;
+
+            foreach (ICollisionActor actor in actors)
+            {
+                try
+                {
+                    actor.Bounds.Position += offset;
+                    foreach (ICollisionActor other in layer.Space.Query(actor.Bounds.BoundingRectangle))
+                        if (actor != other && actor.Bounds.Intersects(other.Bounds))
+                        {
+                            CollisionEventArgs collisionInfo = new()
+                            {
+                                Other = other,
+                                ParallelPenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds, direction),
+                                ShortestPenetrationVector = CalculatePenetrationVector(actor.Bounds, other.Bounds)
+                            };
+                            hitBuffer.Add(collisionInfo);
+                        }
+                }
+                finally { actor.Bounds.Position -= offset; }
+            }
+
+            return hitBuffer.Count;
+        }
+
+        /// <inheritdoc cref="Cast(ReadOnlySpan{ICollisionActor}, List{CollisionEventArgs}, Layer, Vector2, float)"/>
         public int Cast(IEnumerable<ICollisionActor> actors, List<CollisionEventArgs> hitBuffer, Layer layer, Vector2 direction, float distance)
         {
             hitBuffer.Clear();
@@ -128,7 +163,7 @@ namespace MonoGame.Extended.Collisions
             Vector2 offset;
             if (direction == Vector2.Zero) offset = Vector2.Zero;
             else offset = direction.NormalizedCopy() * distance;
-            
+
             foreach (ICollisionActor actor in actors)
             {
                 try
