@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 
 namespace MonoGame.Extended
 {
@@ -61,6 +62,7 @@ namespace MonoGame.Extended
         /// <summary>
         ///     Returns wheter or not the value falls in this <see cref="Range{T}" />.
         /// </summary>
+        [Pure]
         public bool IsInBetween(T value, bool minValueExclusive = false, bool maxValueExclusive = false)
         {
             if (minValueExclusive)
