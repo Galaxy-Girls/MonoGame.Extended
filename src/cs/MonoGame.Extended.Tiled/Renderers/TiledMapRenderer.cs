@@ -82,7 +82,7 @@ namespace MonoGame.Extended.Tiled.Renderers
             }
         }
 
-        public void Draw(Matrix? viewMatrix = null, Matrix? projectionMatrix = null, Effect effect = null, float depth = 0.0f)
+        public void Draw(Matrix? viewMatrix = null, Matrix? projectionMatrix = null, Effect effect = null, float? depth = null)
         {
             var viewMatrix1 = viewMatrix ?? Matrix.Identity;
             var projectionMatrix1 = projectionMatrix ?? Matrix.CreateOrthographicOffCenter(0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height, 0, 0, -1);
@@ -90,7 +90,7 @@ namespace MonoGame.Extended.Tiled.Renderers
             Draw(ref viewMatrix1, ref projectionMatrix1, effect, depth);
         }
 
-        public void Draw(ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect = null, float depth = 0.0f)
+        public void Draw(ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect = null, float? depth = null)
         {
             if (_mapModel == null)
                 return;
@@ -99,7 +99,7 @@ namespace MonoGame.Extended.Tiled.Renderers
                 Draw(index, ref viewMatrix, ref projectionMatrix, effect, depth);
         }
 
-		public void Draw(TiledMapLayer layer, Matrix? viewMatrix = null, Matrix? projectionMatrix = null, Effect effect = null, float depth = 0.0f)
+		public void Draw(TiledMapLayer layer, Matrix? viewMatrix = null, Matrix? projectionMatrix = null, Effect effect = null, float? depth = null)
 		{
 			var viewMatrix1 = viewMatrix ?? Matrix.Identity;
 			var projectionMatrix1 = projectionMatrix ?? Matrix.CreateOrthographicOffCenter(0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height, 0, 0, -1);
@@ -107,7 +107,7 @@ namespace MonoGame.Extended.Tiled.Renderers
 			Draw(layer, ref viewMatrix1, ref projectionMatrix1, effect, depth);
 		}
 
-        public void Draw(int layerIndex, Matrix? viewMatrix = null, Matrix? projectionMatrix = null, Effect effect = null, float depth = 0.0f)
+        public void Draw(int layerIndex, Matrix? viewMatrix = null, Matrix? projectionMatrix = null, Effect effect = null, float? depth = null)
         {
             var viewMatrix1 = viewMatrix ?? Matrix.Identity;
             var projectionMatrix1 = projectionMatrix ?? Matrix.CreateOrthographicOffCenter(0, _graphicsDevice.Viewport.Width, _graphicsDevice.Viewport.Height, 0, 0, -1);
@@ -115,14 +115,14 @@ namespace MonoGame.Extended.Tiled.Renderers
             Draw(layerIndex, ref viewMatrix1, ref projectionMatrix1, effect, depth);
         }
 
-		public void Draw(int layerIndex, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect = null, float depth = 0.0f)
+		public void Draw(int layerIndex, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect = null, float? depth = null)
 		{
             var layer = _mapModel.Layers[layerIndex];
 
 			Draw(layer, ref viewMatrix, ref projectionMatrix, effect, depth);
 		}
 
-		public void Draw(TiledMapLayer layer, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect = null, float depth = 0.0f)
+		public void Draw(TiledMapLayer layer, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect = null, float? depth = null)
 		{
 			if (_mapModel == null)
 				return;
@@ -136,8 +136,9 @@ namespace MonoGame.Extended.Tiled.Renderers
             Draw(layer, Vector2.Zero, Vector2.One, ref viewMatrix, ref projectionMatrix, effect, depth);
 		}
 
-		private void Draw(TiledMapLayer layer, Vector2 parentOffset, Vector2 parentParallaxFactor, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect, float depth)
-		{
+		private void Draw(TiledMapLayer layer, Vector2 parentOffset, Vector2 parentParallaxFactor, ref Matrix viewMatrix, ref Matrix projectionMatrix, Effect effect, float? depth)
+        {
+            depth ??= layer.Depth ?? 0.0f;
 			var offset = parentOffset + layer.Offset;
             var parallaxFactor = parentParallaxFactor * layer.ParallaxFactor;
 
@@ -150,7 +151,7 @@ namespace MonoGame.Extended.Tiled.Renderers
                 return;
             else
 			{
-				_worldMatrix.Translation = new Vector3(offset, depth);
+				_worldMatrix.Translation = new Vector3(offset, depth.Value);
 
 				var effect1 = effect ?? _defaultEffect;
 				var tiledMapEffect = effect1 as ITiledMapEffect;

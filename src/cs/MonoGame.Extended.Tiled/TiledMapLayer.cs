@@ -11,8 +11,9 @@ namespace MonoGame.Extended.Tiled
         public Vector2 Offset { get; set; }
         public Vector2 ParallaxFactor { get; set; }
         public TiledMapProperties Properties { get; }
+        public float? Depth { get; set; }
 
-        protected TiledMapLayer(string name, string type, Vector2? offset = null, Vector2? parallaxFactor = null, float opacity = 1.0f, bool isVisible = true)
+        protected TiledMapLayer(string name, string type, Vector2? offset = null, Vector2? parallaxFactor = null, float opacity = 1.0f, bool isVisible = true, float? depth = null)
         {
             Name = name;
             Type = type;
