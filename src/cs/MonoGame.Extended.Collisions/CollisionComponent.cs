@@ -274,25 +274,38 @@ namespace MonoGame.Extended.Collisions
                     return PenetrationVector(a, b);
                 case RectangleF a when shapeB is TriangleF b:
                     return PenetrationVector(a, b);
-
-                case CircleF a when shapeB is CircleF b:
+                case RectangleF a when shapeB is EllipseF b:
                     return PenetrationVector(a, b);
+
                 case CircleF a when shapeB is RectangleF b:
+                    return PenetrationVector(a, b);
+                case CircleF a when shapeB is CircleF b:
                     return PenetrationVector(a, b);
                 case CircleF a when shapeB is TriangleF b:
                     return PenetrationVector(a, b);
-
-                case TriangleF a when shapeB is CircleF b:
+                case CircleF a when shapeB is EllipseF b:
                     return PenetrationVector(a, b);
+
                 case TriangleF a when shapeB is RectangleF b:
+                    return PenetrationVector(a, b);
+                case TriangleF a when shapeB is CircleF b:
                     return PenetrationVector(a, b);
                 case TriangleF a when shapeB is TriangleF b:
                     return PenetrationVector(a, b);
+                case TriangleF a when shapeB is EllipseF b:
+                    return PenetrationVector(a, b);
 
-                //todo ellipses are hard!
+                case EllipseF a when shapeB is RectangleF b:
+                    return PenetrationVector(a, b);
+                case EllipseF a when shapeB is CircleF b:
+                    return PenetrationVector(a, b);
+                case EllipseF a when shapeB is TriangleF b:
+                    return PenetrationVector(a, b);
+                case EllipseF a when shapeB is EllipseF b:
+                    return PenetrationVector(a, b);
             }
 
-            throw new NotSupportedException("Shapes must be either a CircleF, RectangleF, or TriangleF.");
+            throw new NotSupportedException("Shapes must be either a CircleF, EllipseF, RectangleF, or TriangleF.");
         }
 
         private static Vector2 PenetrationVector(RectangleF rect1, RectangleF rect2, Vector2? direction)
@@ -393,10 +406,7 @@ namespace MonoGame.Extended.Collisions
             }
         }
 
-        private static Vector2 PenetrationVector(RectangleF rect, CircleF circ)
-        {
-            return -PenetrationVector(circ, rect);
-        }
+        private static Vector2 PenetrationVector(RectangleF rect, CircleF circ) => -PenetrationVector(circ, rect);
 
         //apologies for the borderline-psychotic function nesting here
         //figuring this out with triangles is really hard
@@ -466,10 +476,7 @@ namespace MonoGame.Extended.Collisions
             return pVector;
         }
 
-        public static Vector2 PenetrationVector(CircleF circle, TriangleF triangle)
-        {
-            return -PenetrationVector(triangle, circle);
-        }
+        public static Vector2 PenetrationVector(CircleF circle, TriangleF triangle) => -PenetrationVector(triangle, circle);
 
         public static Vector2 PenetrationVector(TriangleF triangle, RectangleF rectangle)
         {
@@ -488,9 +495,76 @@ namespace MonoGame.Extended.Collisions
             return pVector;
         }
 
-        public static Vector2 PenetrationVector(RectangleF rectangle, TriangleF triangle)
+        public static Vector2 PenetrationVector(RectangleF rectangle, TriangleF triangle) => -PenetrationVector(triangle, rectangle);
+
+        public static Vector2 PenetrationVector(EllipseF ellipse, RectangleF rectangle)
         {
-            return -PenetrationVector(triangle, rectangle);
+            // closest point on the rectangle to the center of the ellipse
+            Point2 closestPoint = rectangle.ClosestPointTo(ellipse.Center);
+
+            // vector from the closest point on the rectangle to the center of the ellipse
+            Vector2 pVector = ellipse.Center - closestPoint;
+
+            // depth is just radius minus distance from innermost point to center
+            float pDepth = pVector.Length() - ellipse.RadiusAtPoint(pVector.X, pVector.Y);
+            pVector.Normalize();
+            pVector *= pDepth;
+
+            return pVector;
+        }
+
+        public static Vector2 PenetrationVector(RectangleF rectangle, EllipseF ellipse) => -PenetrationVector(ellipse, rectangle);
+
+        public static Vector2 PenetrationVector(EllipseF ellipse, CircleF circle)
+        {
+            // closest point on the circle to the center of the ellipse
+            Point2 closestPoint = circle.ClosestPointTo(ellipse.Center);
+
+            // vector from the closest point on the circle to the center of the ellipse
+            Vector2 pVector = ellipse.Center - closestPoint;
+
+            // depth is just radius minus distance from innermost point to center
+            float pDepth = pVector.Length() - ellipse.RadiusAtPoint(pVector.X, pVector.Y);
+            pVector.Normalize();
+            pVector *= pDepth;
+
+            return pVector;
+        }
+
+        public static Vector2 PenetrationVector(CircleF circle, EllipseF ellipse) => -PenetrationVector(ellipse, circle);
+
+        public static Vector2 PenetrationVector(EllipseF ellipse, TriangleF triangle)
+        {
+            // closest point on the circle to the center of the ellipse
+            Point2 closestPoint = triangle.ClosestPointTo(ellipse.Center);
+
+            // vector from the closest point on the circle to the center of the ellipse
+            Vector2 pVector = ellipse.Center - closestPoint;
+
+            // depth is just radius minus distance from innermost point to center
+            float pDepth = pVector.Length() - ellipse.RadiusAtPoint(pVector.X, pVector.Y);
+            pVector.Normalize();
+            pVector *= pDepth;
+
+            return pVector;
+        }
+
+        public static Vector2 PenetrationVector(TriangleF triangle, EllipseF ellipse) => -PenetrationVector(ellipse, triangle);
+
+        public static Vector2 PenetrationVector(EllipseF ellipseA, EllipseF ellipseB)
+        {
+            // closest point on the second ellipse to the center of the first ellipse
+            Point2 closestPoint = ellipseB.ClosestPointTo(ellipseA.Center);
+
+            // vector from the closest point on the second ellipse to the center of the first ellipse
+            Vector2 pVector = ellipseA.Center - closestPoint;
+
+            // depth is just radius minus distance from innermost point to center
+            float pDepth = pVector.Length() - ellipseA.RadiusAtPoint(pVector.X, pVector.Y);
+            pVector.Normalize();
+            pVector *= pDepth;
+
+            return pVector;
         }
 
         #endregion

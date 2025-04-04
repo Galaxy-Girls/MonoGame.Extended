@@ -73,6 +73,35 @@ namespace MonoGame.Extended
             DrawPolygonEdge(spriteBatch, texture, points[points.Count - 1] + offset, points[0] + offset, color, thickness, layerDepth);
         }
 
+        /// <summary>
+        ///     Draws a closed polygon from an array of points
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// ///
+        /// <param name="offset">Where to offset the points</param>
+        /// <param name="points">The points to connect with lines</param>
+        /// <param name="color">The color to use</param>
+        /// <param name="thickness">The thickness of the lines</param>
+        /// <param name="layerDepth">The depth of the layer of this shape</param>
+        public static void DrawPolygon(this SpriteBatch spriteBatch, Vector2 offset, IReadOnlyList<Point2> points, Color color, float thickness = 1f, float layerDepth = 0)
+        {
+            if (points.Count == 0)
+                return;
+
+            if (points.Count == 1)
+            {
+                DrawPoint(spriteBatch, points[0], color, (int)thickness);
+                return;
+            }
+
+            var texture = GetTexture(spriteBatch);
+
+            for (var i = 0; i < points.Count - 1; i++)
+                DrawPolygonEdge(spriteBatch, texture, points[i] + offset, points[i + 1] + offset, color, thickness, layerDepth);
+
+            DrawPolygonEdge(spriteBatch, texture, points[points.Count - 1] + offset, points[0] + offset, color, thickness, layerDepth);
+        }
+
         private static void DrawPolygonEdge(SpriteBatch spriteBatch, Texture2D texture, Vector2 point1, Vector2 point2, Color color, float thickness, float layerDepth)
         {
             var length = Vector2.Distance(point1, point2);
@@ -298,6 +327,22 @@ namespace MonoGame.Extended
             DrawPolygon(spriteBatch, center, CreateEllipse(radius.X, radius.Y, sides), color, thickness, layerDepth);
         }
 
+        /// <summary>
+        /// Draw an ellipse.
+        /// </summary>
+        /// <param name="spriteBatch">The destination drawing surface</param>
+        /// <param name="center">Center of the ellipse</param>
+        /// <param name="radius">Radius of the ellipse</param>
+        /// <param name="angle">Angle of the ellipse in radians</param>
+        /// <param name="sides">The number of sides to generate.</param>
+        /// <param name="color">The color of the ellipse.</param>
+        /// <param name="thickness">The thickness of the line around the ellipse.</param>
+        /// <param name="layerDepth">The depth of the layer of this shape</param>
+        public static void DrawEllipse(this SpriteBatch spriteBatch, Vector2 center, Vector2 radius, float angle, int sides, Color color, float thickness = 1f, float layerDepth = 0)
+        {
+            DrawPolygon(spriteBatch, center, CreateEllipse(radius.X, radius.Y, angle, sides), color, thickness, layerDepth);
+        }
+
         private static Vector2[] CreateCircle(double radius, int sides)
         {
             const double max = 2.0 * Math.PI;
@@ -326,6 +371,19 @@ namespace MonoGame.Extended
                 var y = (float)(ry * Math.Sin(t));
                 vertices[i] = new Vector2(x, y);
             }
+
+            return vertices;
+        }
+
+        private static Vector2[] CreateEllipse(float rx, float ry, float angle, int sides)
+        {
+            var vertices = CreateEllipse(rx, ry, sides);
+
+            for (var i = 0; i < sides; i++)
+            {
+                vertices[i] = Vector2.Transform(vertices[i], Matrix.CreateRotationZ(angle));
+            }
+
             return vertices;
         }
     }

@@ -91,7 +91,7 @@ namespace MonoGame.Extended
         private TriangleF Conjugate => new(new(-A.X, A.Y), new(-B.X, B.Y), new(-C.X, C.Y));
 
         [Pure]
-        public Vector2[] GetPoints() => new Vector2[]{A,B,C};
+        public Vector2[] GetPoints() => [A, B, C];
 
         [Pure]
         public Vector2[] GetRelativePoints()
@@ -113,7 +113,7 @@ namespace MonoGame.Extended
         }
 
         /// <summary>
-        ///     Gets the <see cref="float" /> representing the area of this <see cref="TriangleF" />, expressed in units².
+        ///     Gets the <see cref="float" /> representing the area of this <see cref="TriangleF" />, expressed in unitsï¿½.
         /// </summary>
         public float Area => GetArea(A, B, C);
 
